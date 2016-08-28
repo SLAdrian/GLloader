@@ -11,6 +11,12 @@
 struct mPointLight {
 	Cube cube;
 	PointLight data;
+	bool active;
+};
+
+struct mSpotLight {
+	SpotLight data;
+	bool active;
 };
 
 struct Config {
@@ -29,7 +35,7 @@ struct Config {
 
 	struct OBJ {
 		std::vector<mPointLight*> points;
-		std::vector<SpotLight*> spots;
+		std::vector<mSpotLight*> spots;
 		std::vector<Cube*> mCubes;
 		std::vector<Cube*>::iterator iCubes;
 	};
@@ -37,7 +43,7 @@ struct Config {
 	struct IMGUI {
 		static float xyz[3];
 		static float xyz1[3];
-
+		static float lincst[2];
 	};
 
 	SDL_Window* window;

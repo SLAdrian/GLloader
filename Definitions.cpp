@@ -2,6 +2,7 @@
 
 float Config::IMGUI::xyz[3];
 float Config::IMGUI::xyz1[3];
+float Config::IMGUI::lincst[2];
 
 
 

@@ -109,7 +109,7 @@ vec3 calcSpot(SpotLight light, vec3 normal, vec3 viewdir, vec3 fragpos)
 	float spec = pow(max(dot(viewdir, reflectDir), 0.0), shine);
 	vec3 specular = light.specular * spec * vec3(texture(Specular,texCoords));
 
-	//Spotlight
+	//SpotLight
 	float theta = dot(lightDir, normalize(-light.direction));
 	float epison = (light.innerCutoff - light.outerCutoff);
 	float intensity = clamp((theta - light.outerCutoff) / epison, 0.0, 1.0);

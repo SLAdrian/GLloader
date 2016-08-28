@@ -89,7 +89,9 @@ int main(int argc, char* argv[])
 
 
 	SpotLight flashlight(config.gl.camera.Position, config.gl.camera.Front, glm::vec3(0.2), glm::vec3(0.8), glm::vec3(0.4), glm::radians(12.5), glm::radians(17.5), 0.022, 0.0019);
-	config.obj.spots.push_back(&flashlight);
+	mSpotLight flash;
+	flash.data = flashlight;
+	config.obj.spots.push_back(&flash);
 
 
 
@@ -114,15 +116,15 @@ int main(int argc, char* argv[])
 
 		handleKeyboard(&config, &event);
 
-		flashlight.position = config.gl.camera.Position;
-		flashlight.direction = config.gl.camera.Front;
+		flash.data.position = config.gl.camera.Position;
+		flash.data.direction = config.gl.camera.Front;
 
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		for (config.obj.iCubes = config.obj.mCubes.begin(); config.obj.iCubes != config.obj.mCubes.end(); config.obj.iCubes++)
 		{
-			shader.setup(&config, glm::vec3(0.5, 0.2, 0.0), 32, (*(*config.obj.iCubes)->getModel()));
+			shader.setup(&config, glm::vec3(0.5, 0.2, 0.0), 32.0, (*(*config.obj.iCubes)->getModel()));
 			(*config.obj.iCubes)->render();
 		}
 
@@ -168,7 +170,7 @@ void handleEvents(Config* config, SDL_Event* event, bool* exit)
 	SDL_GetMouseState(&xpos, &ypos);
 	if (event->type == SDL_QUIT || config->sdl.keys[SDL_SCANCODE_ESCAPE]) *exit = true;
 
-	if (event->type == SDL_MOUSEMOTION && !config->sdl.keys[SDL_SCANCODE_L])
+	if (event->type == SDL_MOUSEMOTION && SDL_GetRelativeMouseMode())
 	{
 		int xoffset = event->motion.xrel;
 		int yoffset = -event->motion.yrel;
@@ -177,11 +179,7 @@ void handleEvents(Config* config, SDL_Event* event, bool* exit)
 	}
 
 	if (config->sdl.keys[SDL_SCANCODE_L] && !config->sdl.mKeys[SDL_SCANCODE_L])
-		SDL_SetRelativeMouseMode(SDL_FALSE);
-
-	else if (!config->sdl.keys[SDL_SCANCODE_L] && config->sdl.mKeys[SDL_SCANCODE_L])
-		SDL_SetRelativeMouseMode(SDL_TRUE);
-
+		SDL_SetRelativeMouseMode((SDL_GetRelativeMouseMode() ? SDL_FALSE : SDL_TRUE ));
 
 }
 
@@ -224,7 +222,7 @@ void gui(Config * config)
 		{
 			if (ImGui::Button("Toggle Flashlight"))
 			{
-
+				config->flashlight = !config->flashlight;
 			}
 		}
 
@@ -247,7 +245,8 @@ void gui(Config * config)
 
 		if (ImGui::CollapsingHeader("Lighting"))
 		{
-			ImGui::InputFloat3("XlllYZ", config->gui.xyz1);
+			ImGui::InputFloat3("X.YZ", config->gui.xyz1);
+			ImGui::InputFloat2("Linear/Const", config->gui.lincst);
 
 			if (ImGui::TreeNode("Pointlight")) 
 			{
@@ -258,7 +257,7 @@ void gui(Config * config)
 
 					(*light->cube.getModel()) = glm::translate((*light->cube.getModel()), glm::vec3(config->gui.xyz1[0], config->gui.xyz1[1], config->gui.xyz1[2]));
 
-					light->data = PointLight(glm::vec3(config->gui.xyz[0], config->gui.xyz[1], config->gui.xyz[2]), glm::vec3(0.2), glm::vec3(0.4), glm::vec3(0.8), 0.9, .032);
+					light->data = PointLight(glm::vec3(config->gui.xyz[0], config->gui.xyz[1], config->gui.xyz[2]), glm::vec3(0.2), glm::vec3(0.4), glm::vec3(0.8), config->gui.lincst[0], config->gui.lincst[1]);
 					config->obj.points.push_back(light);
 				}
 				ImGui::TreePop();

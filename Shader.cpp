@@ -99,7 +99,7 @@ void CubeShader::setup(Config* config, glm::vec3 color, float shine, glm::mat4 m
 	this->use();
 
 	std::vector<mPointLight*>* pointVector = &config->obj.points;
-	std::vector<SpotLight*>* spotVector = &config->obj.spots;
+	std::vector<mSpotLight*>* spotVector = &config->obj.spots;
 
 	//Matrices
 	glUniformMatrix4fv(glGetUniformLocation(this->program, "model"), 1, false, glm::value_ptr(model));
@@ -135,21 +135,21 @@ void CubeShader::setup(Config* config, glm::vec3 color, float shine, glm::mat4 m
 	//SpotLights
 	count = spotVector->size();
 	glUniform1i(glGetUniformLocation(this->program, "sCount"), count);
-	for (std::vector<SpotLight*>::iterator it = spotVector->begin(); it != spotVector->end(); it++)
+	for (std::vector<mSpotLight*>::iterator it = spotVector->begin(); it != spotVector->end(); it++)
 	{
 		int i = it - spotVector->begin();
-		SpotLight* light = *it;
+		SpotLight light = (*it)->data;
 
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].position").c_str()), light->position.x, light->position.y, light->position.z);
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].direction").c_str()), light->direction.x, light->direction.y, light->direction.z);
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].ambient").c_str()), light->ambient.r, light->ambient.g, light->ambient.b);
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].diffuse").c_str()), light->diffuse.r, light->diffuse.g, light->diffuse.b);
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].specular").c_str()), light->specular.r, light->specular.g, light->specular.b);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].position").c_str()), light.position.x, light.position.y, light.position.z);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].direction").c_str()), light.direction.x, light.direction.y, light.direction.z);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].ambient").c_str()), light.ambient.r, light.ambient.g, light.ambient.b);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].diffuse").c_str()), light.diffuse.r, light.diffuse.g, light.diffuse.b);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].specular").c_str()), light.specular.r, light.specular.g, light.specular.b);
 
-		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].linear").c_str()), light->linear);
-		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].quadratic").c_str()), light->quadratic);
-		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].innerCutoff").c_str()), light->innerCutoff);
-		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].outerCutoff").c_str()), light->outerCutoff);
+		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].linear").c_str()), light.linear);
+		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].quadratic").c_str()), light.quadratic);
+		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].innerCutoff").c_str()), light.innerCutoff);
+		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].outerCutoff").c_str()), light.outerCutoff);
 	}
 
 }
@@ -182,7 +182,7 @@ void TexturedCubeShader::setup(Config* config, float shine, glm::mat4 model, GLu
 {
 	this->use();
 	std::vector<mPointLight*>* pointVector = &config->obj.points;
-	std::vector<SpotLight*>* spotVector = &config->obj.spots;
+	std::vector<mSpotLight*>* spotVector = &config->obj.spots;
 
 	//Matrices
 	glUniformMatrix4fv(glGetUniformLocation(this->program, "model"), 1, false, glm::value_ptr(model));
@@ -228,21 +228,21 @@ void TexturedCubeShader::setup(Config* config, float shine, glm::mat4 model, GLu
 	//SpotLights
 	count = spotVector->size();
 	glUniform1i(glGetUniformLocation(this->program, "sCount"), count);
-	for (std::vector<SpotLight*>::iterator it = spotVector->begin(); it != spotVector->end(); it++)
+	for (std::vector<mSpotLight*>::iterator it = spotVector->begin(); it != spotVector->end(); it++)
 	{
 		int i = it - spotVector->begin();
-		SpotLight* light = *it;
+		SpotLight light = (*it)->data;
 
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].position").c_str()), light->position.x, light->position.y, light->position.z);
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].direction").c_str()), light->direction.x, light->direction.y, light->direction.z);
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].ambient").c_str()), light->ambient.r, light->ambient.g, light->ambient.b);
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].diffuse").c_str()), light->diffuse.r, light->diffuse.g, light->diffuse.b);
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].specular").c_str()), light->specular.r, light->specular.g, light->specular.b);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].position").c_str()), light.position.x, light.position.y, light.position.z);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].direction").c_str()), light.direction.x, light.direction.y, light.direction.z);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].ambient").c_str()), light.ambient.r, light.ambient.g, light.ambient.b);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].diffuse").c_str()), light.diffuse.r, light.diffuse.g, light.diffuse.b);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].specular").c_str()), light.specular.r, light.specular.g, light.specular.b);
 
-		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].linear").c_str()), light->linear);
-		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].quadratic").c_str()), light->quadratic);
-		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].innerCutoff").c_str()), light->innerCutoff);
-		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].outerCutoff").c_str()), light->outerCutoff);
+		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].linear").c_str()), light.linear);
+		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].quadratic").c_str()), light.quadratic);
+		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].innerCutoff").c_str()), light.innerCutoff);
+		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].outerCutoff").c_str()), light.outerCutoff);
 	}
 }
 
@@ -255,7 +255,7 @@ void ModelShader::setup(Config * config, float shine, glm::mat4 model)
 {
 	this->use();
 	std::vector<mPointLight*>* pointVector = &config->obj.points;
-	std::vector<SpotLight*>* spotVector = &config->obj.spots;
+	std::vector<mSpotLight*>* spotVector = &config->obj.spots;
 
 	//Matrices
 	glUniformMatrix4fv(glGetUniformLocation(this->program, "model"), 1, false, glm::value_ptr(model));
@@ -291,20 +291,20 @@ void ModelShader::setup(Config * config, float shine, glm::mat4 model)
 	count = spotVector->size();
 	glUniform1i(glGetUniformLocation(this->program, "sCount"), count);
 
-	for (std::vector<SpotLight*>::iterator it = spotVector->begin(); it != spotVector->end(); it++)
+	for (std::vector<mSpotLight*>::iterator it = spotVector->begin(); it != spotVector->end(); it++)
 	{
 		int i = it - spotVector->begin();
-		SpotLight* light = *it;
+		SpotLight light = (*it)->data;
 
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].position").c_str()), light->position.x, light->position.y, light->position.z);
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].direction").c_str()), light->direction.x, light->direction.y, light->direction.z);
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].ambient").c_str()), light->ambient.r, light->ambient.g, light->ambient.b);
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].diffuse").c_str()), light->diffuse.r, light->diffuse.g, light->diffuse.b);
-		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].specular").c_str()), light->specular.r, light->specular.g, light->specular.b);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].position").c_str()), light.position.x, light.position.y, light.position.z);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].direction").c_str()), light.direction.x, light.direction.y, light.direction.z);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].ambient").c_str()), light.ambient.r, light.ambient.g, light.ambient.b);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].diffuse").c_str()), light.diffuse.r, light.diffuse.g, light.diffuse.b);
+		glUniform3f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].specular").c_str()), light.specular.r, light.specular.g, light.specular.b);
 
-		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].linear").c_str()), light->linear);
-		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].quadratic").c_str()), light->quadratic);
-		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].innerCutoff").c_str()), light->innerCutoff);
-		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].outerCutoff").c_str()), light->outerCutoff);
+		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].linear").c_str()), light.linear);
+		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].quadratic").c_str()), light.quadratic);
+		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].innerCutoff").c_str()), light.innerCutoff);
+		glUniform1f(glGetUniformLocation(this->program, ("sLights[" + std::to_string(i) + "].outerCutoff").c_str()), light.outerCutoff);
 	}
 }
